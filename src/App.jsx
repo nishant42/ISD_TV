@@ -94,25 +94,102 @@ const fmt = (s) => `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
 function RemoteBtn({ id, label, litKey, onAction, style={} }) {
   const isLit = litKey === id;
   const color = REMOTE_BTN_COLORS[id] || "#e8e0d0";
+  // return (
+  //   <div
+  //     onClick={() => onAction && onAction(id)}
+  //     style={{
+  //       borderRadius: 8, padding:"6px 2px", textAlign:"center",
+  //       fontSize: style.fontSize||13, fontWeight: style.fontWeight||600,
+  //       letterSpacing:"0.02em", cursor:"pointer", userSelect:"none",
+  //       background: isLit ? `radial-gradient(circle at center, ${color}55 0%, ${color}18 100%)` : "rgba(255,255,255,0.045)",
+  //       border: isLit ? `1px solid ${color}dd` : "1px solid rgba(255,255,255,0.1)",
+  //       color: isLit ? color : "rgba(160,144,128,0.85)",
+  //       boxShadow: isLit ? `0 0 18px ${color}cc, 0 0 40px ${color}55, inset 0 0 12px ${color}28` : "inset 0 1px 0 rgba(255,255,255,0.07)",
+  //       transform: isLit ? "scale(0.91)" : "scale(1)",
+  //       transition: "all 0.12s ease",
+  //       minHeight: 30, display:"flex", alignItems:"center", justifyContent:"center",
+  //       ...style,
+  //     }}
+  //     onMouseEnter={e => { if(!isLit){ e.currentTarget.style.background="rgba(255,255,255,0.09)"; e.currentTarget.style.color=color; e.currentTarget.style.borderColor=`${color}55`; }}}
+  //     onMouseLeave={e => { if(!isLit){ e.currentTarget.style.background="rgba(255,255,255,0.045)"; e.currentTarget.style.color="rgba(160,144,128,0.85)"; e.currentTarget.style.borderColor="rgba(255,255,255,0.1)"; }}}
+  //   >{label}</div>
+  // );
+
   return (
     <div
       onClick={() => onAction && onAction(id)}
       style={{
-        borderRadius: 8, padding:"6px 2px", textAlign:"center",
-        fontSize: style.fontSize||13, fontWeight: style.fontWeight||600,
-        letterSpacing:"0.02em", cursor:"pointer", userSelect:"none",
-        background: isLit ? `radial-gradient(circle at center, ${color}55 0%, ${color}18 100%)` : "rgba(255,255,255,0.045)",
-        border: isLit ? `1px solid ${color}dd` : "1px solid rgba(255,255,255,0.1)",
+        borderRadius: 8,
+        padding: "6px 2px",
+        textAlign: "center",
+        cursor: "pointer",
+        userSelect: "none",
+        background: isLit
+          ? `radial-gradient(circle at center, ${color}55 0%, ${color}18 100%)`
+          : "rgba(255,255,255,0.045)",
+        border: isLit
+          ? `1px solid ${color}dd`
+          : "1px solid rgba(255,255,255,0.1)",
         color: isLit ? color : "rgba(160,144,128,0.85)",
-        boxShadow: isLit ? `0 0 18px ${color}cc, 0 0 40px ${color}55, inset 0 0 12px ${color}28` : "inset 0 1px 0 rgba(255,255,255,0.07)",
+        boxShadow: isLit
+          ? `0 0 18px ${color}cc, 0 0 40px ${color}55, inset 0 0 12px ${color}28`
+          : "inset 0 1px 0 rgba(255,255,255,0.07)",
         transform: isLit ? "scale(0.91)" : "scale(1)",
         transition: "all 0.12s ease",
-        minHeight: 30, display:"flex", alignItems:"center", justifyContent:"center",
+        minHeight: 55,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "4px",
         ...style,
       }}
-      onMouseEnter={e => { if(!isLit){ e.currentTarget.style.background="rgba(255,255,255,0.09)"; e.currentTarget.style.color=color; e.currentTarget.style.borderColor=`${color}55`; }}}
-      onMouseLeave={e => { if(!isLit){ e.currentTarget.style.background="rgba(255,255,255,0.045)"; e.currentTarget.style.color="rgba(160,144,128,0.85)"; e.currentTarget.style.borderColor="rgba(255,255,255,0.1)"; }}}
-    >{label}</div>
+      onMouseEnter={e => {
+        if (!isLit) {
+          e.currentTarget.style.background = "rgba(255,255,255,0.09)";
+          e.currentTarget.style.color = color;
+          e.currentTarget.style.borderColor = `${color}55`;
+        }
+      }}
+      onMouseLeave={e => {
+        if (!isLit) {
+          e.currentTarget.style.background = "rgba(255,255,255,0.045)";
+          e.currentTarget.style.color = "rgba(160,144,128,0.85)";
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+        }
+      }}
+    >
+      {/* Icon */}
+      {/* <div style={{ fontSize: style.fontSize || 13 }}> */}
+      <div style={{ fontSize: (style.fontSize || 13) + 4 }}>
+        {label}
+      </div>
+  
+      {/* Label */}
+      <div style={{ fontSize: 10, opacity: 0.6 }}>
+        {{
+          home: "Home",
+          back: "Back",
+          menu: "Menu",
+          power: "Power",
+          mute: "Mute",
+          ok: "OK",
+          play: "Play",
+          stop: "Stop",
+          up: "Up",
+          down: "Down",
+          left: "Left",
+          right: "Right",
+          volup: "Vol+",
+          voldown: "Vol−",
+          chup: "CH+",
+          chdown: "CH−",
+          rew: "Rew",
+          fwd: "Fwd",
+          info: "Info",
+        }[id] || ""}
+      </div>
+    </div>
   );
 }
 
@@ -129,7 +206,7 @@ function Remote({ litKey, onAction }) {
       boxShadow:"0 24px 60px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 -1px 0 rgba(0,0,0,0.5)",
       padding:"16px 12px 22px",
       display:"flex", flexDirection:"column", gap:8,
-      width:"100%", maxWidth:148, margin:"0 auto",
+      width:"100%", maxWidth:220, margin:"0 auto",
     }}>
       {/* IR LED */}
       <div style={{ textAlign:"center", marginBottom:2 }}>
@@ -261,7 +338,9 @@ function TVFrame({ children, showRemote, setShowRemote, litKey, toast, onAction 
 
             {/* Screen content */}
             <div className="tv-screen-content" style={{
-              flex: showRemote ? "0 0 80%" : "1",
+              // flex: showRemote ? "0 0 80%" : "1",
+              flex: "1",
+              marginRight: showRemote ? "10px" : "0",
               transition:"flex 0.45s cubic-bezier(0.4,0,0.2,1)",
               overflowY:"auto",
               background:"linear-gradient(135deg,#0a0a0f 0%,#0d0d1a 45%,#0a0f1a 100%)",
@@ -277,7 +356,10 @@ function TVFrame({ children, showRemote, setShowRemote, litKey, toast, onAction 
             {/* Remote panel */}
             {showRemote && (
               <div style={{
-                flex:"0 0 20%",
+                // flex:"0 0 20%",
+                flex: "0 0 240px",
+                maxWidth: "240px",
+                minWidth: "200px",
                 borderLeft:"1px solid #0a0a0a",
                 background:"linear-gradient(180deg,#09090f 0%,#0a0a18 100%)",
                 display:"flex", flexDirection:"column", alignItems:"center",
@@ -286,14 +368,14 @@ function TVFrame({ children, showRemote, setShowRemote, litKey, toast, onAction 
               }}>
                 <div style={{fontSize:9,color:"#333",letterSpacing:"0.18em",marginBottom:12,fontWeight:600}}>REMOTE CONTROL</div>
                 {/* Keyboard hints */}
-                <div style={{width:"100%",maxWidth:148,marginBottom:12,padding:"7px 9px",background:"rgba(255,255,255,0.018)",borderRadius:8,border:"1px solid rgba(255,255,255,0.05)"}}>
+                {/* <div style={{width:"100%",maxWidth:148,marginBottom:12,padding:"7px 9px",background:"rgba(255,255,255,0.018)",borderRadius:8,border:"1px solid rgba(255,255,255,0.05)"}}>
                   {[["Space","Play/Pause"],["↑↓","Volume"],["[]","Channel"],["←→","Seek"],["M","Mute"],["Esc","Back"],["H","Home"],["P","Power"]].map(([k,v])=>(
                     <div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:9,marginBottom:3}}>
                       <span style={{fontFamily:"monospace",background:"rgba(255,255,255,0.05)",padding:"1px 5px",borderRadius:3,color:"#6a6a8a"}}>{k}</span>
                       <span style={{color:"#444"}}>{v}</span>
                     </div>
                   ))}
-                </div>
+                </div> */}
                 <Remote litKey={litKey} onAction={onAction}/>
               </div>
             )}
@@ -387,6 +469,11 @@ export default function MoodFlix() {
   const [toast, setToast]         = useState(null);
   const litTimer = useRef(null);
   const progTimer = useRef(null);
+  const [showMoreCount, setShowMoreCount] = useState(0);
+  const [showMoodPopup, setShowMoodPopup] = useState(false);
+  const [showRatingPopup, setShowRatingPopup] = useState(false);
+  const [navZone, setNavZone] = useState(1);
+  const [btnIndex, setBtnIndex] = useState(0);
 
   const movies = selectedMood ? (MOVIES[selectedMood] || MOVIES.unsure) : [];
   const movie  = movies[movieIndex % Math.max(movies.length,1)];
@@ -402,18 +489,35 @@ export default function MoodFlix() {
     litTimer.current = setTimeout(() => setLitKey(null), 350);
   }, []);
 
-  /* Progress ticker */
+
   useEffect(() => {
     if (isPlaying) {
-      progTimer.current = setInterval(() => setProgress(p => p >= 100 ? 100 : p + 0.25), 400);
-    } else clearInterval(progTimer.current);
+      progTimer.current = setInterval(() => {
+        setProgress(p => {
+          if (p >= 100) {
+            clearInterval(progTimer.current);
+            setPlaying(false);
+            setShowRatingPopup(true); 
+            return 100;
+          }
+          return p + 0.25;
+        });
+      }, 400);
+    } else {
+      clearInterval(progTimer.current);
+    }
+  
     return () => clearInterval(progTimer.current);
   }, [isPlaying]);
 
   const [cursor, setCursor] = useState(0); // tracks highlighted item index per screen
 
-  // reset cursor whenever screen changes
-  useEffect(() => { setCursor(0); }, [screen]);
+
+  useEffect(() => {
+    setCursor(0);
+    setNavZone(1);
+    setBtnIndex(0);
+  }, [screen]);
 
   const allMoodsList = [...PRIMARY_MOODS, ...ALT_MOODS];
   const usersList    = [...USERS, { id:"new", name:"New User", color:"#666" }];
@@ -438,18 +542,57 @@ export default function MoodFlix() {
     /* ── PRIMARY MOOD screen ── */
     else if (screen === SCREENS.PRIMARY_MOOD) {
       const moodCount = PRIMARY_MOODS.length;
-      if (rid==="right"||rid==="down")   { setCursor(c => Math.min(c+1, moodCount-1)); showT("→ Navigate"); }
-      else if (rid==="left"||rid==="up") { setCursor(c => Math.max(c-1, 0)); showT("← Navigate"); }
-      else if (rid==="ok"||rid==="play") {
-        const m = PRIMARY_MOODS[cursor];
-        if (m) { setMood(m.id); setMovieIdx(0); go(SCREENS.RECOMMENDATION); showT(`✓ ${m.label}`); }
+
+      if (rid === "down") {
+        setNavZone(z => Math.min(z + 1, 2));
       }
-      else if (rid==="back")  { go(SCREENS.USERS); showT("↩ Back"); }
-      else if (rid==="menu")  { go(SCREENS.ALT_MOOD); showT("☰ More moods…"); }
-      else if (rid==="chup")  { setMood("unsure"); setMovieIdx(0); go(SCREENS.RECOMMENDATION); showT("⏭ Skip mood"); }
-      else if (rid==="info")  { showT("ℹ Use ◀▶ to browse moods, OK to confirm"); }
-      else if (rid==="home")  { setUser(null); setMood(null); go(SCREENS.USERS); showT("🏠 Home"); }
-      else if (rid==="power") { setUser(null); setMood(null); go(SCREENS.USERS); showT("⏻ Powering off…"); }
+      else if (rid === "up") {
+        setNavZone(z => Math.max(z - 1, 0));
+      }
+
+      // moods
+      else if (rid === "right" && navZone === 1) {
+        setCursor(c => Math.min(c + 1, moodCount - 1));
+      }
+      else if (rid === "left" && navZone === 1) {
+        setCursor(c => Math.max(c - 1, 0));
+      }
+
+      // 🔥 top buttons navigation
+      else if (navZone === 0 && rid === "right") {
+        setBtnIndex(i => Math.min(i + 1, 1));
+      }
+      else if (navZone === 0 && rid === "left") {
+        setBtnIndex(i => Math.max(i - 1, 0));
+      }
+
+      // OK
+      else if (rid === "ok" || rid === "play") {
+        if (navZone === 0) {
+          if (btnIndex === 0) {
+            go(SCREENS.USERS);
+          } else {
+            setMood("unsure");
+            setMovieIdx(0);
+            go(SCREENS.RECOMMENDATION);
+          }
+        }
+        else if (navZone === 1) {
+          const m = PRIMARY_MOODS[cursor];
+          if (m) {
+            setMood(m.id);
+            setMovieIdx(0);
+            go(SCREENS.RECOMMENDATION);
+          }
+        }
+        else if (navZone === 2) {
+          go(SCREENS.ALT_MOOD);
+        }
+      }
+
+      else if (rid==="back")  { go(SCREENS.USERS); }
+      else if (rid==="menu")  { go(SCREENS.ALT_MOOD); }
+      else if (rid==="chup")  { setMood("unsure"); setMovieIdx(0); go(SCREENS.RECOMMENDATION); }
     }
 
     /* ── ALT MOOD screen ── */
@@ -469,22 +612,73 @@ export default function MoodFlix() {
 
     /* ── RECOMMENDATION screen ── */
     else if (screen === SCREENS.RECOMMENDATION) {
-      if (rid==="ok"||rid==="play")      { setProgress(0); setPlaying(false); go(SCREENS.PLAYER); showT("▶ Watch Now"); }
-      else if (rid==="right"||rid==="chup"||rid==="fwd") {
-        setMovieIdx(i=>(i+1)%Math.max(movies.length,1)); showT("➜ Show More");
+
+      if (rid === "down") {
+        setNavZone(z => Math.min(z + 1, 2));
       }
-      else if (rid==="left"||rid==="chdown"||rid==="rew") {
-        setMovieIdx(i=>(i-1+Math.max(movies.length,1))%Math.max(movies.length,1)); showT("← Prev");
+      else if (rid === "up") {
+        setNavZone(z => Math.max(z - 1, 0));
       }
-      else if (rid==="down") { setMovieIdx(i=>(i+1)%Math.max(movies.length,1)); showT("👎 Next"); }
-      else if (rid==="back") { go(SCREENS.PRIMARY_MOOD); showT("↩ Back"); }
-      else if (rid==="home") { setUser(null); setMood(null); setMovieIdx(0); go(SCREENS.USERS); showT("🏠 Home"); }
-      else if (rid==="menu") { go(SCREENS.PRIMARY_MOOD); showT("☰ Change mood"); }
-      else if (rid==="info") { showT(movie ? `ℹ ${movie.title} · ${movie.genre}` : ""); }
-      else if (rid==="power"){ setUser(null); setMood(null); go(SCREENS.USERS); showT("⏻ Powering off…"); }
-      else if (rid==="mute") { setMuted(m => { showT(!m?"🔇 Muted":"🔊 Unmuted"); return !m; }); }
-      else if (rid==="volup")   { setVolume(v => { const n=Math.min(v+10,100); showT(`🔊 Volume ${n}`); return n; }); }
-      else if (rid==="voldown") { setVolume(v => { const n=Math.max(v-10,0); showT(`🔉 Volume ${n}`); return n; }); }
+
+      // movie browse
+      else if ((rid==="right"||rid==="chup"||rid==="fwd") && navZone === 1) {
+        setShowMoreCount(c => {
+          const newCount = c + 1;
+          if (newCount >= 5) {
+            setShowMoodPopup(true);
+            return 0;
+          }
+          return newCount;
+        });
+        setMovieIdx(i => (i + 1) % Math.max(movies.length, 1));
+      }
+
+      else if ((rid==="left"||rid==="chdown"||rid==="rew") && navZone === 1) {
+        setMovieIdx(i => (i - 1 + Math.max(movies.length,1)) % Math.max(movies.length,1));
+      }
+
+      // 🔥 bottom buttons navigation
+      else if (navZone === 2 && rid === "right") {
+        setBtnIndex(i => Math.min(i + 1, 2));
+      }
+      else if (navZone === 2 && rid === "left") {
+        setBtnIndex(i => Math.max(i - 1, 0));
+      }
+
+      // OK
+      else if (rid==="ok"||rid==="play") {
+        if (navZone === 0) {
+          go(SCREENS.PRIMARY_MOOD);
+        }
+        else if (navZone === 1) {
+          setProgress(0);
+          setPlaying(false);
+          go(SCREENS.PLAYER);
+        }
+        else if (navZone === 2) {
+          if (btnIndex === 0) {
+            setMovieIdx(i=>i+1);
+          }
+          else if (btnIndex === 1) {
+            setProgress(0);
+            setPlaying(false);
+            go(SCREENS.PLAYER);
+          }
+          else if (btnIndex === 2) {
+            setShowMoreCount(c => {
+              const newCount = c + 1;
+              if (newCount >= 5) {
+                setShowMoodPopup(true);
+                return 0;
+              }
+              return newCount;
+            });
+            setMovieIdx(i => i + 1);
+          }
+        }
+      }
+
+      else if (rid==="back") { go(SCREENS.PRIMARY_MOOD); }
     }
 
     /* ── PLAYER screen ── */
@@ -555,31 +749,123 @@ export default function MoodFlix() {
   if (screen === SCREENS.PRIMARY_MOOD) return (
     <TVFrame showRemote={showRemote} setShowRemote={setShowRemote} litKey={litKey} toast={toast} onAction={handleRemoteAction}>
       <div style={S.card(animate)}>
+
         <div style={S.logoBar}>
           <div style={S.logo}>MoodFlix</div>
+
           <div style={{display:"flex",gap:8}}>
-            <button style={S.backBtn} onClick={()=>go(SCREENS.USERS)}>← Back</button>
-            <button style={{...S.backBtn}} onClick={()=>{setMood("unsure");setMovieIdx(0);go(SCREENS.RECOMMENDATION);}}>Skip Mood</button>
+
+            {/* Back */}
+            <button
+              style={{
+                ...S.backBtn,
+                border: navZone === 0 && btnIndex === 0 ? "2px solid #E53935" : S.backBtn.border,
+                boxShadow: navZone === 0 && btnIndex === 0 ? "0 0 12px #E53935" : "none"
+              }}
+              onClick={()=>go(SCREENS.USERS)}
+            >
+              ← Back
+            </button>
+
+            {/* Skip */}
+            <button
+              style={{
+                ...S.backBtn,
+                border: navZone === 0 && btnIndex === 1 ? "2px solid #E53935" : S.backBtn.border,
+                boxShadow: navZone === 0 && btnIndex === 1 ? "0 0 12px #E53935" : "none"
+              }}
+              onClick={()=>{
+                setMood("unsure");
+                setMovieIdx(0);
+                go(SCREENS.RECOMMENDATION);
+              }}
+            >
+              Skip Mood
+            </button>
+
           </div>
         </div>
-        <div style={S.title}>How are you feeling, {selectedUser?.name}?</div>
-        <div style={{fontSize:10,color:"#555",textAlign:"center",marginBottom:12,letterSpacing:"0.08em"}}>◀▶ navigate · OK to select · Menu for more moods</div>
+
+        <div style={S.title}>
+          How are you feeling, {selectedUser?.name}?
+        </div>
+
+        <div style={{fontSize:10,color:"#555",textAlign:"center",marginBottom:12,letterSpacing:"0.08em"}}>
+          ◀▶ navigate · OK to select · Menu for more moods
+        </div>
+
+        {/* ✅ ORIGINAL MOOD GRID (UNCHANGED) */}
         <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center"}}>
           {PRIMARY_MOODS.map((m,i)=>{
             const isActive = cursor===i;
             return (
-              <div key={m.id} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8,padding:"14px 18px",border:`1px solid ${isActive?m.color:m.color+"40"}`,borderRadius:14,background:isActive?`${m.color}28`:`${m.color}08`,cursor:"pointer",transition:"all 0.2s",minWidth:76,boxShadow:isActive?`0 0 22px ${m.color}66, 0 0 0 2px ${m.color}66`:"",transform:isActive?"translateY(-4px) scale(1.08)":"scale(1)"}}
+              <div
+                key={m.id}
+                style={{
+                  display:"flex",
+                  flexDirection:"column",
+                  alignItems:"center",
+                  gap:8,
+                  padding:"14px 18px",
+                  border:`1px solid ${isActive?m.color:m.color+"40"}`,
+                  borderRadius:14,
+                  background:isActive?`${m.color}28`:`${m.color}08`,
+                  cursor:"pointer",
+                  transition:"all 0.2s",
+                  minWidth:76,
+                  boxShadow:isActive?`0 0 22px ${m.color}66, 0 0 0 2px ${m.color}66`:"",
+                  transform:isActive?"translateY(-4px) scale(1.08)":"scale(1)"
+                }}
                 onClick={()=>{setMood(m.id);setMovieIdx(0);go(SCREENS.RECOMMENDATION);}}
-                onMouseEnter={()=>setCursor(i)}>
-                <span style={{fontSize:isActive?40:34,transition:"font-size 0.2s"}}>{m.emoji}</span>
-                <span style={{fontSize:11,color:isActive?m.color:"#c0b8a8",letterSpacing:"0.06em",fontWeight:isActive?700:400}}>{m.label}</span>
-                {isActive && <div style={{width:16,height:2,background:m.color,borderRadius:1,boxShadow:`0 0 6px ${m.color}`}}/>}
+                onMouseEnter={()=>setCursor(i)}
+              >
+                <span style={{fontSize:isActive?40:34,transition:"font-size 0.2s"}}>
+                  {m.emoji}
+                </span>
+
+                <span style={{
+                  fontSize:11,
+                  color:isActive?m.color:"#c0b8a8",
+                  letterSpacing:"0.06em",
+                  fontWeight:isActive?700:400
+                }}>
+                  {m.label}
+                </span>
+
+                {isActive && (
+                  <div style={{
+                    width:16,
+                    height:2,
+                    background:m.color,
+                    borderRadius:1,
+                    boxShadow:`0 0 6px ${m.color}`
+                  }}/>
+                )}
               </div>
             );
           })}
         </div>
-        <div style={{textAlign:"center",marginTop:20,color:"#E53935",cursor:"pointer",fontSize:13,letterSpacing:"0.06em",textDecoration:"underline"}}
-          onClick={()=>go(SCREENS.ALT_MOOD)}>+ Choose alternative mood</div>
+
+        {/* Bottom button */}
+        <div
+          style={{
+            textAlign:"center",
+            marginTop:20,
+            color:"#E53935",
+            cursor:"pointer",
+            fontSize:13,
+            letterSpacing:"0.06em",
+            textDecoration:"underline",
+            border: navZone === 2 ? "2px solid #E53935" : "none",
+            boxShadow: navZone === 2 ? "0 0 12px #E53935" : "none",
+            padding:"6px",
+            borderRadius:"8px"
+          }}
+          onClick={()=>go(SCREENS.ALT_MOOD)}
+        >
+          + Choose alternative mood
+        </div>
+
       </div>
     </TVFrame>
   );
@@ -613,27 +899,60 @@ export default function MoodFlix() {
   if (screen === SCREENS.RECOMMENDATION && movie) return (
     <TVFrame showRemote={showRemote} setShowRemote={setShowRemote} litKey={litKey} toast={toast} onAction={handleRemoteAction}>
       <div style={S.card(animate)}>
+
         <div style={S.logoBar}>
           <div style={S.logo}>MoodFlix</div>
+
           <div style={{display:"flex",alignItems:"center",gap:8}}>
-            {moodInfo.emoji&&<div style={{display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px",borderRadius:20,background:`${moodInfo.color}16`,border:`1px solid ${moodInfo.color}44`,fontSize:12,color:moodInfo.color}}>{moodInfo.emoji} {moodInfo.label}</div>}
-            <button style={S.backBtn} onClick={()=>go(SCREENS.PRIMARY_MOOD)}>Change Mood</button>
+            {moodInfo.emoji && (
+              <div style={{
+                display:"inline-flex",
+                alignItems:"center",
+                gap:5,
+                padding:"3px 10px",
+                borderRadius:20,
+                background:`${moodInfo.color}16`,
+                border:`1px solid ${moodInfo.color}44`,
+                fontSize:12,
+                color:moodInfo.color
+              }}>
+                {moodInfo.emoji} {moodInfo.label}
+              </div>
+            )}
+
+            {/* Change Mood */}
+            <button
+              style={{
+                ...S.backBtn,
+                border: navZone === 0 ? "2px solid #E53935" : S.backBtn.border,
+                boxShadow: navZone === 0 ? "0 0 12px #E53935" : "none"
+              }}
+              onClick={()=>go(SCREENS.PRIMARY_MOOD)}
+            >
+              Change Mood
+            </button>
           </div>
         </div>
+
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
-          <div style={{fontSize:11,color:"#444",letterSpacing:"0.12em"}}>RECOMMENDED FOR YOU</div>
+          <div style={{fontSize:11,color:"#444",letterSpacing:"0.12em"}}>
+            RECOMMENDED FOR YOU
+          </div>
           <div style={S.badge}>{movie.provider}</div>
         </div>
+
         <div style={{borderRadius:16,overflow:"hidden",border:"1px solid rgba(255,255,255,0.07)"}}>
           <div style={{position:"relative"}}>
-            <img src={movie.img} alt={movie.title} style={{width:"100%",height:210,objectFit:"cover",display:"block"}}/>
+            <img src={movie.img} alt={movie.title} style={{width:"100%",height:210,objectFit:"cover"}}/>
             <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(10,10,20,0.93) 0%,transparent 55%)"}}/>
+
             <div style={{position:"absolute",bottom:14,left:18}}>
               <div style={{fontSize:20,fontWeight:700,marginBottom:3}}>{movie.title}</div>
               <div style={{fontSize:12,color:"#a09080",marginBottom:8}}>{movie.genre}</div>
               <Stars rating={movie.rating}/>
             </div>
           </div>
+
           <div style={{padding:"14px 18px",background:"rgba(255,255,255,0.02)"}}>
             <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
               <span style={S.tag}>⏱ {movie.length}</span>
@@ -642,14 +961,126 @@ export default function MoodFlix() {
             </div>
           </div>
         </div>
+
+        {/* Bottom buttons */}
         <div style={{display:"flex",gap:10,marginTop:18}}>
-          <button style={S.dislikeBtn} onClick={()=>setMovieIdx(i=>i+1)}>👎 Dislike</button>
-          <button style={S.watchBtn} onClick={()=>{setProgress(0);setPlaying(false);go(SCREENS.PLAYER);}}>▶ Watch Now</button>
-          <button style={S.showMoreBtn} onClick={()=>setMovieIdx(i=>i+1)}>➜ Show More</button>
+
+          <button
+            style={{
+              ...S.dislikeBtn,
+              border: navZone === 2 && btnIndex === 0 ? "2px solid #E53935" : S.dislikeBtn.border,
+              boxShadow: navZone === 2 && btnIndex === 0 ? "0 0 12px #E53935" : "none"
+            }}
+            onClick={()=>setMovieIdx(i=>i+1)}
+          >
+            👎 Dislike
+          </button>
+
+          <button
+            style={{
+              ...S.watchBtn,
+              border: navZone === 2 && btnIndex === 1 ? "2px solid #E53935" : S.watchBtn.border,
+              boxShadow: navZone === 2 && btnIndex === 1 ? "0 0 12px #E53935" : "none"
+            }}
+            onClick={()=>{setProgress(0);setPlaying(false);go(SCREENS.PLAYER);}}
+          >
+            ▶ Watch Now
+          </button>
+
+          <button
+            style={{
+              ...S.showMoreBtn,
+              border: navZone === 2 && btnIndex === 2 ? "2px solid #E53935" : S.showMoreBtn.border,
+              boxShadow: navZone === 2 && btnIndex === 2 ? "0 0 12px #E53935" : "none"
+            }}
+            onClick={() => {
+              setShowMoreCount(c => {
+                const newCount = c + 1;
+                if (newCount >= 5) {
+                  setShowMoodPopup(true);
+                  return 0;
+                }
+                return newCount;
+              });
+              setMovieIdx(i => i + 1);
+            }}
+          >
+            ➜ Show More
+          </button>
+
         </div>
-        <div style={{textAlign:"center",marginTop:12,fontSize:11,color:"#2e2e3e"}}>{movieIndex+1} of {movies.length} recommendations</div>
-        <div style={{textAlign:"center",marginTop:8,fontSize:10,color:"#333",letterSpacing:"0.08em"}}>OK = Watch · ◀▶ = Browse · Back = Change Mood</div>
+
+        <div style={{textAlign:"center",marginTop:12,fontSize:11,color:"#2e2e3e"}}>
+          {movieIndex+1} of {movies.length} recommendations
+        </div>
+
       </div>
+
+      {/* Popup unchanged */}
+      {showMoodPopup && (
+    <div style={{
+      position: "fixed",
+      top: 0, left: 0, right: 0, bottom: 0,
+      background: "rgba(0,0,0,0.7)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 9999
+    }}>
+      <div style={{
+        background: "#111",
+        padding: "30px",
+        borderRadius: "12px",
+        textAlign: "center",
+        border: "1px solid rgba(255,255,255,0.1)",
+        maxWidth: "400px"
+      }}>
+        <h3 style={{ marginBottom: "15px" }}>
+          Not finding anything interesting?
+        </h3>
+
+        <p style={{ marginBottom: "20px", color: "#aaa" }}>
+          Try changing your mood for better recommendations
+        </p>
+
+        <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+          
+          <button
+            onClick={() => {
+              setShowMoodPopup(false);
+              go(SCREENS.PRIMARY_MOOD);
+            }}
+            style={{
+              padding: "10px 16px",
+              background: "#E53935",
+              border: "none",
+              borderRadius: "8px",
+              color: "#fff",
+              cursor: "pointer"
+            }}
+          >
+            Change Mood
+          </button>
+
+          <button
+            onClick={() => setShowMoodPopup(false)}
+            style={{
+              padding: "10px 16px",
+              background: "transparent",
+              border: "1px solid #555",
+              borderRadius: "8px",
+              color: "#aaa",
+              cursor: "pointer"
+            }}
+          >
+            Keep Browsing
+          </button>
+
+        </div>
+      </div>
+    </div>
+  )}
+
     </TVFrame>
   );
 
@@ -723,6 +1154,70 @@ export default function MoodFlix() {
           <div style={{fontSize:13,color:"#c0b8a8"}}>🎭 {movie.cast}</div>
           <div style={{fontSize:12,color:"#666",marginTop:3}}>Genre: {movie.genre}</div>
         </div>
+        {showRatingPopup && (
+      <div style={{
+        position: "fixed",
+        top: 0, left: 0, right: 0, bottom: 0,
+        background: "rgba(0,0,0,0.7)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 9999
+      }}>
+        <div style={{
+          background: "#111",
+          padding: "30px",
+          borderRadius: "12px",
+          textAlign: "center",
+          border: "1px solid rgba(255,255,255,0.1)",
+          maxWidth: "400px"
+        }}>
+          <h3 style={{ marginBottom: "15px" }}>
+            👍 Did you like this movie?
+          </h3>
+
+          <div style={{ display: "flex", gap: "20px", justifyContent: "center" }}>
+            
+          <button
+            onClick={() => {
+              setShowRatingPopup(false);
+              showT("👍 Thanks for your feedback!");
+            }}
+            style={{
+              padding: "14px 18px",
+              background: "#111",
+              border: "1px solid rgba(255,255,255,0.2)",
+              borderRadius: "10px",
+              fontSize: "20px",
+              cursor: "pointer",
+              color: "#fff"
+            }}
+          >
+            👍
+          </button>
+
+          <button
+            onClick={() => {
+              setShowRatingPopup(false);
+              showT("👎 Got it, we’ll improve recommendations");
+            }}
+            style={{
+              padding: "14px 18px",
+              background: "#111",
+              border: "1px solid rgba(255,255,255,0.2)",
+              borderRadius: "10px",
+              fontSize: "20px",
+              cursor: "pointer",
+              color: "#fff"
+            }}
+          >
+            👎
+          </button>
+
+          </div>
+        </div>
+      </div>
+)}
       </TVFrame>
     );
   }
