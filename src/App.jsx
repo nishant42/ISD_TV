@@ -297,6 +297,13 @@ function TVFrame({ children, showRemote, setShowRemote, litKey, toast, onAction,
         .tv-screen-content::-webkit-scrollbar-track { background:transparent }
         .tv-screen-content::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px }
         .large-text-mode * { font-size: 110% !important; }
+
+        @media (max-width: 900px) {
+           .responsive-card { padding: 15px 15px !important; }
+           .tv-screen-content { padding: 8px !important; }
+           .movie-image { height: 160px !important; }
+           .movie-title { font-size: 20px !important; }
+        }
       `}</style>
 
 
@@ -474,11 +481,11 @@ const S = {
   showMoreBtn: { padding: "13px 16px", background: "rgba(229,57,53,0.09)", border: "1px solid rgba(229,57,53,0.28)", borderRadius: 10, color: "#E53935", fontSize: 17, cursor: "pointer" },
 };
 
-const SCREENS = { USERS: "USERS", PRIMARY_MOOD: "PRIMARY_MOOD", WANTED_MOOD: "WANTED_MOOD", RECOMMENDATION: "RECOMMENDATION", PLAYER: "PLAYER" };
+const SCREENS = { OFF: "OFF", USERS: "USERS", PRIMARY_MOOD: "PRIMARY_MOOD", WANTED_MOOD: "WANTED_MOOD", RECOMMENDATION: "RECOMMENDATION", PLAYER: "PLAYER" };
 
 /* ─── APP ───────────────────────────────────────────────────────────── */
 export default function MoodFlix() {
-  const [screen, setScreen] = useState(SCREENS.USERS);
+  const [screen, setScreen] = useState(SCREENS.OFF);
   const [selectedUser, setUser] = useState(null);
   const [selectedMood, setMood] = useState(null);
   const [movieIndex, setMovieIdx] = useState(0);
@@ -571,6 +578,24 @@ export default function MoodFlix() {
   const handleRemoteAction = useCallback((rid) => {
     flash(rid);
 
+    if (rid === "power") {
+      if (screen === SCREENS.OFF) {
+        go(SCREENS.USERS);
+        showT("⏻ Powering on…");
+      } else {
+        setUser(null);
+        setMood(null);
+        setMovieIdx(0);
+        setPlaying(false);
+        setProgress(0);
+        go(SCREENS.OFF);
+        showT("⏻ Powering off…");
+      }
+      return;
+    }
+
+    if (screen === SCREENS.OFF) return;
+
     /* ── USERS screen ── */
     if (screen === SCREENS.USERS) {
       if (rid === "right" || rid === "down") { setCursor(c => Math.min(c + 1, usersList.length - 1)); showT("→ Navigate"); }
@@ -651,7 +676,6 @@ export default function MoodFlix() {
       }
       else if (rid === "back") { go(SCREENS.PRIMARY_MOOD); showT("↩ Back"); }
       else if (rid === "home") { setUser(null); setMood(null); go(SCREENS.USERS); showT("🏠 Home"); }
-      else if (rid === "power") { setUser(null); setMood(null); go(SCREENS.USERS); showT("⏻ Powering off…"); }
       else if (rid === "info") { showT("ℹ Use ◀▶ to browse, OK to pick"); }
     }
 
@@ -684,7 +708,7 @@ export default function MoodFlix() {
 
       // 🔥 bottom buttons navigation
       else if (navZone === 2 && rid === "right") {
-        setBtnIndex(i => Math.min(i + 1, 2));
+        setBtnIndex(i => Math.min(i + 1, 3));
       }
       else if (navZone === 2 && rid === "left") {
         setBtnIndex(i => Math.max(i - 1, 0));
@@ -707,14 +731,17 @@ export default function MoodFlix() {
         }
         else if (navZone === 2) {
           if (btnIndex === 0) {
-            setMovieIdx(i => i + 1);
+            setShowInfo(s => !s);
           }
           else if (btnIndex === 1) {
+            setMovieIdx(i => i + 1);
+          }
+          else if (btnIndex === 2) {
             setProgress(0);
             setPlaying(false);
             go(SCREENS.PLAYER);
           }
-          else if (btnIndex === 2) {
+          else if (btnIndex === 3) {
             setShowMoreCount(c => {
               const newCount = c + 1;
               if (newCount >= 5) {
@@ -746,7 +773,6 @@ export default function MoodFlix() {
       else if (rid === "info") { showT(movie ? `ℹ ${movie.title} · ${movie.genre}` : ""); }
       else if (rid === "menu") { showT("☰ Menu"); }
       else if (rid === "home") { setUser(null); setMood(null); setMovieIdx(0); setPlaying(false); setProgress(0); go(SCREENS.USERS); showT("🏠 Home"); }
-      else if (rid === "power") { setPlaying(false); setProgress(0); showT("⏻ Powering off…"); setTimeout(() => { go(SCREENS.USERS); }, 700); }
       else if (rid.startsWith("n")) { showT(`⌨ ${rid.replace("n", "")}`); }
     }
 
@@ -764,13 +790,20 @@ export default function MoodFlix() {
     return () => window.removeEventListener("keydown", onKey);
   }, [handleRemoteAction]);
 
+  /* ── SCREEN: OFF ── */
+  if (screen === SCREENS.OFF) return (
+    <TVFrame showRemote={showRemote} setShowRemote={setShowRemote} litKey={litKey} toast={toast} onAction={handleRemoteAction}>
+      <div key={"OFF"} style={{ width: "100%", height: "100%", background: "#000" }} />
+    </TVFrame>
+  );
+
   /* ── SCREEN: USERS ── */
   if (screen === SCREENS.USERS) return (
     <TVFrame showRemote={showRemote} setShowRemote={setShowRemote} litKey={litKey} toast={toast} onAction={handleRemoteAction}>
-      <div style={S.card(animate)}>
-        <div style={S.logoBar}><div style={S.logo}>MoodFlix</div><div style={{ fontSize: 13, color: "#444", letterSpacing: "0.14em" }}>MOOD-BASED STREAMING</div></div>
+      <div key={screen} className="responsive-card" style={S.card(animate)}>
+        <div style={S.logoBar}><div style={S.logo}>MoodFlix</div><div style={{ fontSize: 13, color: "#aaa", letterSpacing: "0.14em" }}>MOOD-BASED STREAMING</div></div>
         <div style={S.title}>Who's Watching?</div>
-        <div style={{ fontSize: 13, color: "#555", textAlign: "center", marginBottom: 12, letterSpacing: "0.08em" }}>◀▶ navigate · OK to select</div>
+        <div style={{ fontSize: 13, color: "#fff", textAlign: "center", marginBottom: 12, letterSpacing: "0.08em" }}>◀▶ navigate · OK to select</div>
         <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
           {USERS.map((u, i) => {
             const isActive = cursor === i;
@@ -779,7 +812,7 @@ export default function MoodFlix() {
                 onClick={() => { setUser(u); go(SCREENS.PRIMARY_MOOD); }}
                 onMouseEnter={e => { setCursor(i); }}
               >
-                <div style={{ width: 58, height: 58, borderRadius: "50%", background: `radial-gradient(circle at 35% 35%,${u.color}dd,${u.color}55)`, boxShadow: `0 0 ${isActive ? 40 : 20}px ${u.color}${isActive ? "88" : "44"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, transition: "all 0.2s" }}>👤</div>
+                <div style={{ width: 58, height: 58, borderRadius: "50%", background: `radial-gradient(circle at 35% 35%,${u.color}dd,${u.color}55)`, boxShadow: `0 0 ${isActive ? 40 : 20}px ${u.color}${isActive ? "88" : "44"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, fontWeight: "bold", color: "#fff", transition: "all 0.2s" }}>{u.name.charAt(0)}</div>
                 <span style={{ fontSize: 17, color: isActive ? u.color : "#c0b8a8", fontWeight: isActive ? 700 : 400 }}>{u.name}</span>
                 {isActive && <div style={{ width: 20, height: 2, background: u.color, borderRadius: 1, boxShadow: `0 0 6px ${u.color}` }} />}
               </div>
@@ -798,7 +831,7 @@ export default function MoodFlix() {
   /* ── SCREEN: PRIMARY MOOD ── */
   if (screen === SCREENS.PRIMARY_MOOD) return (
     <TVFrame showRemote={showRemote} setShowRemote={setShowRemote} litKey={litKey} toast={toast} onAction={handleRemoteAction}>
-      <div style={S.card(animate)}>
+      <div key={screen} className="responsive-card" style={S.card(animate)}>
 
         <div style={S.logoBar}>
           <div style={S.logo}>MoodFlix</div>
@@ -840,14 +873,14 @@ export default function MoodFlix() {
           How are you feeling, {selectedUser?.name}?
         </div>
 
-        <div style={{ fontSize: 13, color: "#555", textAlign: "center", marginBottom: 12, letterSpacing: "0.08em" }}>
+        <div style={{ fontSize: 13, color: "#fff", textAlign: "center", marginBottom: 12, letterSpacing: "0.08em" }}>
           ◀▶ navigate · OK to select · Menu for more moods
         </div>
 
         {/* ✅ ORIGINAL MOOD GRID (UNCHANGED) */}
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
           {PRIMARY_MOODS.map((m, i) => {
-            const isActive = cursor === i;
+            const isActive = navZone === 1 && cursor === i;
             return (
               <div
                 key={m.id}
@@ -923,10 +956,10 @@ export default function MoodFlix() {
   /* ── SCREEN: WANTED MOOD ── */
   if (screen === SCREENS.WANTED_MOOD) return (
     <TVFrame showRemote={showRemote} setShowRemote={setShowRemote} litKey={litKey} toast={toast} onAction={handleRemoteAction} setLargeFont={setLargeFont}>
-      <div style={S.card(animate)}>
+      <div key={screen} className="responsive-card" style={S.card(animate)}>
         <div style={S.logoBar}><div style={S.logo}>MoodFlix</div><button style={S.backBtn} onClick={() => go(SCREENS.PRIMARY_MOOD)}>← Back</button></div>
-        <div style={S.title}>{showAllMoods ? "MORE MOODS" : "Got it. What do you want to feel after watching?"}</div>
-        <div style={{ fontSize: 13, color: "#777", textAlign: "center", marginBottom: 20, letterSpacing: "0.08em" }}>◀▶ navigate · OK to select</div>
+        <div className="responsive-title" style={S.title}>{showAllMoods ? "MORE MOODS" : "Got it. What do you want to feel after watching?"}</div>
+        <div style={{ fontSize: 13, color: "#fff", textAlign: "center", marginBottom: 20, letterSpacing: "0.08em" }}>◀▶ navigate · OK to select</div>
         <div style={{ display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "center", maxWidth: 800, margin: "0 auto" }}>
           {(showAllMoods ? ALT_MOODS : displayedWantedMoods).map((m, i) => {
             const isActive = cursor === i;
@@ -948,13 +981,13 @@ export default function MoodFlix() {
   /* ── SCREEN: RECOMMENDATION ── */
   if (screen === SCREENS.RECOMMENDATION && movie) return (
     <TVFrame showRemote={showRemote} setShowRemote={setShowRemote} litKey={litKey} toast={toast} onAction={handleRemoteAction}>
-      <div style={S.card(animate)}>
+      <div key={screen} className="responsive-card" style={S.card(animate)}>
 
         <div style={S.logoBar}>
           <div style={S.logo}>MoodFlix</div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {moodInfo.emoji && (
+            {moodInfo.label && (
               <div style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -966,7 +999,7 @@ export default function MoodFlix() {
                 fontSize: 16,
                 color: moodInfo.color
               }}>
-                {moodInfo.emoji} {moodInfo.label}
+                {moodInfo.label}
               </div>
             )}
 
@@ -991,14 +1024,21 @@ export default function MoodFlix() {
           <div style={S.badge}>{movie.provider}</div>
         </div>
 
-        <div style={{ borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)" }}>
+        <div style={{ 
+          borderRadius: 16, 
+          overflow: "hidden", 
+          border: navZone === 1 ? "2px solid #E53935" : "1px solid rgba(255,255,255,0.07)",
+          boxShadow: navZone === 1 ? "0 0 24px rgba(229,57,53,0.45)" : "none",
+          transform: navZone === 1 ? "scale(1.02)" : "scale(1)",
+          transition: "all 0.25s ease-out"
+        }}>
           <div style={{ position: "relative" }}>
-            <img src={movie.img} alt={movie.title} style={{ width: "100%", height: 210, objectFit: "cover" }} />
+            <img className="movie-image" src={movie.img} alt={movie.title} style={{ width: "100%", height: 210, objectFit: "cover" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(10,10,20,0.93) 0%,transparent 55%)" }} />
 
             <div style={{ position: "absolute", bottom: 14, left: 18 }}>
-              <div style={{ fontSize: 27, fontWeight: 700, marginBottom: 3 }}>{movie.title}</div>
-              <div style={{ fontSize: 16, color: "#a09080", marginBottom: 8 }}>{movie.genre}</div>
+              <div className="movie-title" style={{ fontSize: 27, fontWeight: 700, marginBottom: 3 }}>{movie.title}</div>
+              <div style={{ fontSize: 16, color: "#fff", fontWeight: 500, marginBottom: 8, textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}>{movie.genre}</div>
               <Stars rating={movie.rating} />
             </div>
           </div>
@@ -1017,9 +1057,25 @@ export default function MoodFlix() {
 
           <button
             style={{
-              ...S.dislikeBtn,
-              border: navZone === 2 && btnIndex === 0 ? "2px solid #E53935" : S.dislikeBtn.border,
+              padding: "13px 16px",
+              background: "rgba(255,255,255,0.06)",
+              border: navZone === 2 && btnIndex === 0 ? "2px solid #E53935" : "1px solid rgba(255,255,255,0.1)",
+              borderRadius: "10px",
+              color: "#aaa",
+              fontSize: "17px",
+              cursor: "pointer",
               boxShadow: navZone === 2 && btnIndex === 0 ? "0 0 12px #E53935" : "none"
+            }}
+            onClick={() => setShowInfo(!showInfo)}
+          >
+            ℹ Info
+          </button>
+
+          <button
+            style={{
+              ...S.dislikeBtn,
+              border: navZone === 2 && btnIndex === 1 ? "2px solid #E53935" : S.dislikeBtn.border,
+              boxShadow: navZone === 2 && btnIndex === 1 ? "0 0 12px #E53935" : "none"
             }}
             onClick={() => setMovieIdx(i => i + 1)}
           >
@@ -1029,8 +1085,8 @@ export default function MoodFlix() {
           <button
             style={{
               ...S.watchBtn,
-              border: navZone === 2 && btnIndex === 1 ? "2px solid #E53935" : S.watchBtn.border,
-              boxShadow: navZone === 2 && btnIndex === 1 ? "0 0 12px #E53935" : "none"
+              border: navZone === 2 && btnIndex === 2 ? "2px solid #E53935" : S.watchBtn.border,
+              boxShadow: navZone === 2 && btnIndex === 2 ? "0 0 12px #E53935" : "none"
             }}
             onClick={() => { setProgress(0); setPlaying(false); go(SCREENS.PLAYER); }}
           >
@@ -1040,8 +1096,8 @@ export default function MoodFlix() {
           <button
             style={{
               ...S.showMoreBtn,
-              border: navZone === 2 && btnIndex === 2 ? "2px solid #E53935" : S.showMoreBtn.border,
-              boxShadow: navZone === 2 && btnIndex === 2 ? "0 0 12px #E53935" : "none"
+              border: navZone === 2 && btnIndex === 3 ? "2px solid #E53935" : S.showMoreBtn.border,
+              boxShadow: navZone === 2 && btnIndex === 3 ? "0 0 12px #E53935" : "none"
             }}
             onClick={() => {
               setShowMoreCount(c => {
@@ -1069,24 +1125,7 @@ export default function MoodFlix() {
           </div>
         )}
 
-        <div style={{ display: "flex", justifyContent: "center", marginTop: 22 }}>
-          <button
-            style={{
-              padding: "10px 16px",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.2)",
-              borderRadius: "10px",
-              color: "#fff",
-              fontSize: "13px",
-              cursor: "pointer"
-            }}
-            onClick={() => setShowInfo(!showInfo)}
-          >
-            ℹ Info
-          </button>
-        </div>
-
-        <div style={{ textAlign: "center", marginTop: 12, fontSize: 14, color: "#2e2e3e" }}>
+        <div style={{ textAlign: "center", marginTop: 22, fontSize: 14, color: "#8aa" }}>
           {movieIndex + 1} of {movies.length} recommendations
         </div>
 
