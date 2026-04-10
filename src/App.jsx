@@ -211,7 +211,8 @@ function Remote({ litKey, onAction }) {
       boxShadow: "0 24px 60px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 -1px 0 rgba(0,0,0,0.5)",
       padding: "16px 12px 22px",
       display: "flex", flexDirection: "column", gap: 6,
-      width: "100%", maxWidth: 290, margin: "0 auto", transform: "scale(0.85)", transformOrigin: "top center"
+      width: "100%", maxWidth: 290, margin: "0 auto", transform: "scale(0.85)", transformOrigin: "top center",
+      boxSizing: "border-box"
     }}>
       {/* IR LED */}
       <div style={{ textAlign: "center", marginBottom: 2 }}>
@@ -388,7 +389,7 @@ function TVFrame({ children, showRemote, setShowRemote, litKey, toast, onAction,
                 borderLeft: "1px solid #0a0a0a",
                 background: "linear-gradient(180deg,#09090f 0%,#0a0a18 100%)",
                 display: "flex", flexDirection: "column", alignItems: "center",
-                padding: "20px 8px 20px", overflowY: "hidden",
+                padding: "20px 8px 20px", overflow: "hidden", boxSizing: "border-box",
                 transition: "all 0.45s cubic-bezier(0.4,0,0.2,1)",
               }}>
 
