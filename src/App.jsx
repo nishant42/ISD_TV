@@ -284,10 +284,11 @@ function Remote({ litKey, onAction }) {
 function TVFrame({ children, showRemote, setShowRemote, litKey, toast, onAction, setLargeFont }) {
   return (
     <div style={{
-      minHeight: "100vh",
+      height: "100dvh",
       background: "radial-gradient(ellipse at center, #2a1f0e 0%, #1a1208 40%, #0e0c08 100%)",
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       padding: "4px 8px 4px", fontFamily: "'Georgia','Times New Roman',serif",
+      boxSizing: "border-box", overflow: "hidden"
     }}>
       <style>{`
         @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(-8px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
@@ -298,11 +299,11 @@ function TVFrame({ children, showRemote, setShowRemote, litKey, toast, onAction,
         .tv-screen-content::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px }
         .large-text-mode * { font-size: 110% !important; }
 
-        @media (max-width: 900px) {
+        @media (max-width: 900px), (max-height: 800px) {
            .responsive-card { padding: 15px 15px !important; }
            .tv-screen-content { padding: 8px !important; }
-           .movie-image { height: 160px !important; }
-           .movie-title { font-size: 20px !important; }
+           .movie-image { height: 140px !important; }
+           .movie-title { font-size: 18px !important; }
         }
       `}</style>
 
@@ -318,13 +319,14 @@ function TVFrame({ children, showRemote, setShowRemote, litKey, toast, onAction,
 
       {/* ── TV BODY ── */}
       <div style={{
-        width: "100%", maxWidth: "100vw", height: "calc(100vh - 80px)", display: "flex", flexDirection: "column",
+        width: "100%", maxWidth: "100vw", height: "calc(100dvh - 80px)", display: "flex", flexDirection: "column",
         background: "linear-gradient(160deg,#2e2e2e 0%,#1e1e1e 40%,#181818 100%)",
         borderRadius: "22px 22px 12px 12px",
         border: "1px solid #3a3a3a",
         boxShadow: "0 0 0 1px #111, 0 40px 100px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -2px 0 rgba(0,0,0,0.6)",
         padding: "14px 14px 0 14px",
         position: "relative",
+        boxSizing: "border-box"
       }}>
 
         {/* Corner screws */}
@@ -442,7 +444,7 @@ function TVFrame({ children, showRemote, setShowRemote, litKey, toast, onAction,
       </div>
 
       {/* ── TV STAND ── */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
         <div style={{ width: 160, height: 10, background: "linear-gradient(90deg,#141414,#2a2a2a,#141414)", borderRadius: "0 0 6px 6px", boxShadow: "0 4px 12px rgba(0,0,0,0.8)" }} />
         <div style={{ width: 100, height: 24, background: "linear-gradient(180deg,#222,#1a1a1a)", borderRadius: "0 0 10px 10px", boxShadow: "0 6px 20px rgba(0,0,0,0.7)", position: "relative" }}>
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "rgba(255,255,255,0.05)" }} />
@@ -456,9 +458,10 @@ function TVFrame({ children, showRemote, setShowRemote, litKey, toast, onAction,
 /* ─── SHARED STYLES ─────────────────────────────────────────────────── */
 const S = {
   app: {
-    minHeight: "100vh", background: "linear-gradient(135deg,#0a0a0f 0%,#0d0d1a 45%,#0a0f1a 100%)",
+    minHeight: "100dvh", background: "linear-gradient(135deg,#0a0a0f 0%,#0d0d1a 45%,#0a0f1a 100%)",
     fontFamily: "'Georgia','Times New Roman',serif", color: "#e8e0d0",
-    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 20, position: "relative", overflow: "hidden"
+    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 20, position: "relative", overflow: "hidden",
+    boxSizing: "border-box"
   },
   bg: {
     position: "fixed", top: 0, left: 0, right: 0, bottom: 0, pointerEvents: "none", zIndex: 0,
